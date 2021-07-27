@@ -1,0 +1,244 @@
+﻿<Page x:Class="PubApp.Views.ProductPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:PubApp.Views"
+      xmlns:customControls="clr-namespace:PubApp.Views.CustomControls"
+      xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+      mc:Ignorable="d" 
+      d:DesignHeight="520" d:DesignWidth="820"
+      Title="ProductPage">
+
+    <Page.Resources>
+        <Style x:Key="BaseStyleTextBlock" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment"
+                    Value="Center"/>
+            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="Margin" Value="5, 0, 0, 0"></Setter>
+        </Style>
+
+        <Style x:Key="StyleFavoriteToggleButton" TargetType="ToggleButton">
+            <Setter Property="Command" Value="{Binding ChangeFavoriteStatusCommand}"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Grid Background="Transparent">
+                            <Border Name="Border"
+                                    CornerRadius="15"
+                                    BorderThickness="1.3"
+                                    BorderBrush="#B4B5B6">
+                                <Image x:Name="FavoriteButtonImage"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Source="../Images/heart_48px.png"
+                                       Stretch="UniformToFill"
+                                       Height="40"
+                                       Width="40"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="FavoriteButtonImage"
+                                        Property="Source"
+                                        Value="../Images/heart_48px-marked.png"></Setter>
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#F4F4F6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="StyleOrdinaryButton" TargetType="Button">
+            <Setter Property="Margin" Value="20, 0, 0, 0"></Setter>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="DemiBold"/>
+            <Setter Property="Foreground" Value="#211D1E"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid Background="Transparent">
+                            <Border Name="Border"
+                                    CornerRadius="18"
+                                    Background="#FFFFFF">
+                                <TextBlock VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Text="{TemplateBinding Content}"/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#EEEFF4"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="#F9FAFF">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="6*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Image VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Source="../Images/default_bottle.png"
+                       Stretch="Uniform"
+                       RenderOptions.BitmapScalingMode="Fant"/>
+            </Grid>
+
+            <StackPanel Grid.Column="1"
+                        VerticalAlignment="Center">
+                <TextBlock FontSize="20"
+                           Foreground="#B4B5B6"
+                           Margin="10, 10, 0, 10"
+                           Text="{Binding Drink.Hardness}"
+                           Style="{StaticResource BaseStyleTextBlock}"/>
+
+                <TextBlock FontSize="25"
+                           Foreground="#211D1E"
+                           Margin="10, 0, 0, 10"
+                           FontWeight="Bold"
+                           Text="{Binding Drink.Name}"
+                           Style="{StaticResource BaseStyleTextBlock}"/>
+
+                <TextBox Text="{Binding Drink.Price}" MaxWidth="100"
+                         Margin="10, 5, 0, 20"
+                         Height="40"
+                         FontSize="17"
+                         Style="{StaticResource StyleTextBlock}"
+                         HorizontalAlignment="Left">
+                </TextBox>
+
+                <ListBox x:Name="ListBoxSizes"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ItemsSource="{Binding Drink.Sizes}">
+
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="Background"
+                                    Value="Transparent"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                        <Border BorderBrush="Transparent"
+                                                BorderThickness="0"
+                                                Background="{TemplateBinding Background}">
+                                            <ContentPresenter/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Margin="0, 0, 0, 10"
+                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <customControls:ToggleButtonCustom Width="100"
+                                                               Height="40"
+                                                               Text="{Binding}"
+                                                               FontSize="17"
+                                                               Margin="10, 0, 0, 0"
+                                                               GroupName="DrinkSize">
+                                <b:Interaction.Triggers>
+                                    <b:EventTrigger EventName="MouseDown" >
+                                        <b:InvokeCommandAction Command="{Binding ListboxItemClickCommand}"
+                                                               CommandParameter="{Binding ElementName=ListBoxSizes, Path=SelectedItem}"/>
+                                    </b:EventTrigger>
+                                </b:Interaction.Triggers>
+                            </customControls:ToggleButtonCustom>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <!--<WrapPanel Orientation="Horizontal"
+                           >
+                    <customControls:ToggleButtonCustom Width="100"
+                                                       Height="40"
+                                                       FontSize="17"
+                                                       Text="250ML"
+                                                       Margin="10, 0, 0, 0"
+                                                       IsSelected="True"
+                                                       GroupName="DrinkSize"/>
+                    <customControls:ToggleButtonCustom Width="100"
+                                                       Height="40"
+                                                       FontSize="17"
+                                                       Text="500ML"
+                                                       Margin="10, 0, 0,0"
+                                                       GroupName="DrinkSize"/>
+                    <customControls:ToggleButtonCustom Width="100"
+                                                       Height="40"
+                                                       FontSize="17"
+                                                       Text="500ML"
+                                                       Margin="10, 0, 0,0"
+                                                       GroupName="DrinkSize"/>
+                    <customControls:ToggleButtonCustom Width="100"
+                                                       Height="40"
+                                                       FontSize="17"
+                                                       Text="500ML"
+                                                       Margin="10, 0, 0,0"
+                                                       GroupName="DrinkSize"/>
+                    <customControls:ToggleButtonCustom Width="100"
+                                                       Height="40"
+                                                       FontSize="17"
+                                                       Text="500ML"
+                                                       Margin="10, 0, 0,0"
+                                                       GroupName="DrinkSize"/>
+                    <customControls:ToggleButtonCustom Width="100"
+                                                       Height="40"
+                                                       FontSize="17"
+                                                       Text="500ML"
+                                                       Margin="10, 0, 0,0"
+                                                       GroupName="DrinkSize"/>
+                </WrapPanel>-->
+
+                <customControls:CustomQuantityControl x:Name="QuantityControl" 
+                                                      HorizontalAlignment="Left"
+                                                      Margin="10, 0, 0, 0"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Border CornerRadius="25"
+                    Background="#211D1E">
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="50, 0"
+                            Background="Transparent"
+                            Height="80">
+                    <ToggleButton MinWidth="80" 
+                            Style="{StaticResource StyleFavoriteToggleButton}"
+                            Command="{Binding ChangeFavoriteStatusCommand}"
+                            IsChecked="{Binding Drink.Favorite}"/>
+
+                    <Button MinWidth="300"
+                            Content="Buy"
+                            Style="{StaticResource StyleOrdinaryButton}"
+                            Command="{Binding BuyDrinkCommand}" CommandParameter="{Binding ElementName=QuantityControl, Path=DataContext.Quantity}"/>
+                    <Button MinWidth="300"
+                            Content="Clear"
+                            Style="{StaticResource StyleOrdinaryButton}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>
